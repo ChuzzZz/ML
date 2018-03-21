@@ -5,8 +5,9 @@
 
 import csv
 import operator
-import numpy as np
+
 import matplotlib.pyplot as plt
+import numpy as np
 from sklearn.model_selection import KFold
 
 __author__ = 'CHUZ'
@@ -98,7 +99,8 @@ def classify(inX, train_matrix, train_labels, k):
         else:
             class_count[vote_label] = 1
 
-    sorted_class_count = sorted(class_count.items(), key=operator.itemgetter(1), reverse=True)
+    sorted_class_count = sorted(
+        class_count.items(), key=operator.itemgetter(1), reverse=True)
     return sorted_class_count[0][0]
 
 
@@ -112,25 +114,32 @@ def cal_accuracy_rate(trainX, train_labels, testX, test_labels, k):
     return accuracy_rate
 
 
-if __name__ == '__main__' :
-    # train_data = get_training_data()
-    # test_data = get_test_data()
-    # for k in [1, 3, 5, 10]:
-    #     print(k)
-    #     print(cal_accuracy_rate(train_data[0], train_data[1], test_data[0], test_data[1], k))
+def handwriting_test():
+    train_data = get_training_data()
+    test_data = get_test_data()
+    for k in [1, 3, 5, 10]:
+        print('k =', k, end=' ')
+        print('accuracy =', cal_accuracy_rate(train_data[0], train_data[1], test_data[0], test_data[1], k))
+
+
+def crossvali_handwriting_test():
+    # 画图用
     x_list = list(range(1, 11))
     y_list = []
+
+    X, labels = get_all_data()
+    kf = KFold(n_splits=5)
     for k in range(1, 11):
-        X, labels = get_all_data()
-        kf = KFold(n_splits=5)
         sum_accuracy = 0.0
         for train_index, test_index in kf.split(X):
             # print("TRAIN:", train_index, "TEST:", test_index)
             X_train, X_test = X[train_index], X[test_index]
             labels_train, labels_test = labels[train_index], labels[test_index]
-            sum_accuracy += cal_accuracy_rate(X_train, labels_train, X_test, labels_test, k)
+            sum_accuracy += cal_accuracy_rate(X_train,
+                                              labels_train, X_test, labels_test, k)
         mean_accuracy = sum_accuracy / 5
-        print(mean_accuracy)
+        print('k =', k, end=' ')
+        print('accuracy =', mean_accuracy)
         y_list.append(mean_accuracy)
 
     # 绘图
@@ -140,3 +149,8 @@ if __name__ == '__main__' :
     ax.set_ylabel('accuracy rate')
     ax.plot(x_list, y_list, color='r', linewidth=1, alpha=0.6)
     plt.show()
+
+if __name__ == '__main__':
+    handwriting_test()
+    crossvali_handwriting_test()
+    
