@@ -150,7 +150,8 @@ def crossvali_handwriting_test():
     ax.plot(x_list, y_list, color='r', linewidth=1, alpha=0.6)
     plt.show()
 
+
 if __name__ == '__main__':
     handwriting_test()
     crossvali_handwriting_test()
-    
+
