@@ -46,13 +46,21 @@ def show_graph(set1, set2):
     plt.show()
 
 
+def likelihood(*c):
+    class_num = len(c)
+    for i in range(class_num):
+        print('Class', i, 'mean : ', np.mean(c[i], axis=0))
+        print('         cov : ', np.cov(c[i].T))
+
+
 def bayes_classify(x, *c):
     class_num = len(c)
     pre = [c[i].shape[0] / 1000 for i in range(class_num)]
-    class_mean = np.zeros((class_num, 2))
-    class_cov = np.zeros((class_num, 2, 2))
+    class_mean = np.zeros((class_num, 2))  # n*2
+    class_cov = np.zeros((class_num, 2, 2))  # n*2*2
     det = np.zeros((class_num, 1))
-    g = np.zeros((class_num, 1))  # row n is the possibility of classify the sample to class n
+    # row n is the possibility of classify the sample to class n
+    g = np.zeros((class_num, 1))
 
     for i in range(class_num):
         class_mean[i] = np.mean(c[i], axis=0)
@@ -65,13 +73,16 @@ def bayes_classify(x, *c):
 
 def euclid_classify(x, *c):
     class_num = len(c)
-    class_mean = np.zeros((class_num, 2))
-    g = np.zeros((class_num, 1))  # row n is the possibility of classify the sample to class n
-    sigma_square = 2
+    class_mean = np.zeros((class_num, 2))  # n*2
+    class_cov = np.zeros((class_num, 2, 2))  # n*2*2
+    # row n is the possibility of classify the sample to class n
+    g = np.zeros((class_num, 1))
 
     for i in range(class_num):
         class_mean[i] = np.mean(c[i], axis=0)
-        g[i] = (x - class_mean[i]).dot((x - class_mean[i])[np.newaxis].T) / (-2 * sigma_square)
+        class_cov[i] = np.cov(c[i].T)
+        g[i] = -0.5 * (x - class_mean[i]).dot(np.linalg.inv(class_cov[i])).dot(
+            (x - class_mean[i])[np.newaxis].T)
 
     return np.argmax(g)
 
@@ -91,8 +102,11 @@ def cal_accuracy_rate(classify_func, *c):
 if __name__ == '__main__':
     X1, X2, X3 = gen_x()
     X_quote1, X_quote2, X_quote3 = gen_xquote()
+    likelihood(X1, X2, X3)
     X = np.vstack((X1, X2, X3))
     X_quote = np.vstack((X_quote1, X_quote2, X_quote3))
-    # show_graph(X, X_quote)
     cal_accuracy_rate(bayes_classify, X1, X2, X3)
     cal_accuracy_rate(euclid_classify, X1, X2, X3)
+    cal_accuracy_rate(bayes_classify, X_quote1, X_quote2, X_quote3)
+    cal_accuracy_rate(euclid_classify, X_quote1, X_quote2, X_quote3)
+    # show_graph(X, X_quote)
