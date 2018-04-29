@@ -77,6 +77,13 @@ def gradient_descent(X, y, theta, alpha, my_lambda, num_iter):
 
 
 def predict(X, y, theta):
+    """RMSE on test set.
+
+    :param X:
+    :param y:
+    :param theta:
+    :return:
+    """
     m = y.size
     RMSE = 0
 
