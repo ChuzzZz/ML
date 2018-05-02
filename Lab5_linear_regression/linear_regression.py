@@ -12,7 +12,7 @@ from sklearn.model_selection import LeaveOneOut
 
 alpha = 0.3
 num_iter = 1000
-my_lambda = 3
+my_lambda = 7.0
 
 
 def load_data():
@@ -49,7 +49,7 @@ def compute_cost(X, y, theta, my_lambda=0):
     m = y.size
     J = 0
 
-    regularization_term = my_lambda * sum(theta[1:] ** 2)
+    regularization_term = my_lambda / (2 * m) * sum(theta[1:] ** 2)
     J = sum((X @ theta - y) ** 2) / (2 * m) + regularization_term  # shape=(1, 1)
     return J
 
@@ -116,8 +116,8 @@ if __name__ == '__main__':
     # Add bias term to X
     X = np.concatenate((np.ones((X.shape[0], 1)), X), axis=1)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    # best_lambda = choose_best_lambda(X_train, y_train, [0.1, 0.3, 1.0, 3.0, 10.0])  # best_lambda = 3
+    # best_lambda = choose_best_lambda(X_train, y_train, [0.1, 0.3, 1.0, 3.0, 5.0, 7.0, 8.5, 10.0, 12.0])  # best_lambda = 7.0
     theta = np.zeros((14,))
-    theta = gradient_descent(X, y, theta, alpha, my_lambda, num_iter)
+    theta = gradient_descent(X_train, y_train, theta, alpha, my_lambda, num_iter)
     RMSE = predict(X_test, y_test, theta)
     print(RMSE)
