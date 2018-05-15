@@ -49,8 +49,8 @@ def compute_cost(X, y, theta, my_lambda=0):
     m = y.size
     J = 0
 
-    regularization_term = my_lambda / (2 * m) * sum(theta[1:] ** 2)
-    J = sum((X @ theta - y) ** 2) / (2 * m) + regularization_term  # shape=(1, 1)
+    regularization_term = my_lambda * sum(theta[1:] ** 2)
+    J = (sum((X @ theta - y) ** 2) + regularization_term) / (2 * m)
     return J
 
 
