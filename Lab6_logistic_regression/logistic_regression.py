@@ -11,7 +11,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 
 alpha = 1
-my_lambda = 1
+my_lambda = 0
 
 
 def load_data(file_path):
@@ -137,7 +137,7 @@ def double_classification():
     optimal_theta = gradient_descent(X_train, y_train, theta, alpha, my_lambda)
     prediction = predict(X_test, optimal_theta)
     accuracy = np.sum(prediction == y_test) / y_test.size
-    print('accuracy: {0:.2f}%'.format(accuracy * 100))
+    print('accuracy: {0:.1f}%'.format(accuracy * 100))
 
 
 def multi_classification():
